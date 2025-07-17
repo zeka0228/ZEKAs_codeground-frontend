@@ -59,7 +59,7 @@ export const useBattleModals = ({
   confirmNavigation, // confirmNavigation 추가
 }: UseBattleModalsProps) => {
   const navigate = useNavigate();
-  const { sendMessage } = useWebSocketStore();
+  const { sendMessage, disconnect } = useWebSocketStore();
 
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
   const [confirmExitCallback, setConfirmExitCallback] = useState<(() => void) | null>(null);
@@ -161,6 +161,7 @@ export const useBattleModals = ({
   }, [handleContinueAlone]);
 
   const handleSurrenderLeave = useCallback(async () => {
+    disconnect();
     cleanupScreenShare(); // 화면 공유 정리 추가
     setIsGameFinished(true); // 게임 종료 상태 설정 추가
     if (confirmNavigation) {
@@ -173,7 +174,7 @@ export const useBattleModals = ({
         navigate('/result');
       }
     }
-  }, [cleanupScreenShare, setIsGameFinished, navigate, confirmNavigation, matchType]);
+  }, [disconnect, cleanupScreenShare, setIsGameFinished, navigate, confirmNavigation, matchType]);
 
   const handleLeave = useCallback(async () => {
     cleanupScreenShare();
@@ -202,6 +203,7 @@ export const useBattleModals = ({
   }, [setIsGameFinished, handleContinueAlone, setIsGamePaused]);
 
   const handleCorrectAnswerLeave = useCallback(async () => {
+    disconnect();
     cleanupScreenShare();
     setIsGameFinished(true); // 게임 종료 상태 설정
     if (confirmNavigation) {
@@ -214,7 +216,7 @@ export const useBattleModals = ({
         navigate('/result');
       }
     }
-  }, [cleanupScreenShare, navigate, confirmNavigation, matchType]);
+  }, [disconnect, cleanupScreenShare, navigate, confirmNavigation, matchType]);
 
   return {
     isExitModalOpen,
